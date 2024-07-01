@@ -48,7 +48,7 @@ st.write(f"Final Payment Due Date: :green[{final_pmt_date}]")
 # selected_tour = st.selectbox('Choose the tour:', tour_names)
 
 
-if first_departure_date != "":
+if first_departure_date != today:
     st.markdown("#### Input relevant booking information")
     column1, column2, column3= st.columns([0.4,0.2, 0.4])
     with column1:

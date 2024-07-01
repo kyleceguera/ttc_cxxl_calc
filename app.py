@@ -17,7 +17,7 @@ today = datetime.today().date()
 # tour_names.insert(0, '')
 
 # Streamlit app
-st.set_page_config(page_title='TTC Cancellation Tool', page_icon='dollar', layout="centered", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title='Input Relevant Information', page_icon='dollar', layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 
 def calc_refund(amount_paid, claim_amount):
@@ -54,26 +54,26 @@ with col1:
     # selected_tour = st.selectbox('Choose the tour:', tour_names)
 
 
-if first_departure_date != "":
-    st.markdown("#### Input relevant booking information")
-    column1, column2, column3= st.columns([0.4,0.2, 0.4])
-    with column1:
-        ins_price = st.number_input("If insurance was purchased, enter cost here:")
-        air_price = st.number_input("Air Department advised fees:")
-        arr_xfer_price = st.number_input("If booked, enter arrival transfer price:")
-        prenight_price = st.number_input('Enter pre-night price, if booked:')
-        mct_price = st.number_input("Enter LAND price:")
-        post_price = st.number_input('Enter post-night price, if booked:')
-        dep_xfer_price = st.number_input("If booked, enter departure transfer price:")
-        
-    with column2:
-        ins_date = st.date_input("Insurance Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=today)
-        st.markdown("#")
-        arr_xfer_date = st.date_input("Arr Xfer Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=ins_date)
-        prenight_date = st.date_input("Prenight Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=arr_xfer_date)
-        mct_date = st.date_input("Tour Dep Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=prenight_date)
-        post_date = st.date_input("Postnight Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=mct_date)
-        dep_xfer_date = st.date_input("Dep Xfer Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=post_date)
+
+st.markdown("#### Input relevant booking information")
+column1, column2, column3= st.columns([0.4,0.2, 0.4])
+with column1:
+    ins_price = st.number_input("If insurance was purchased, enter cost here:")
+    air_price = st.number_input("Air Department advised fees:")
+    arr_xfer_price = st.number_input("If booked, enter arrival transfer price:")
+    prenight_price = st.number_input('Enter pre-night price, if booked:')
+    mct_price = st.number_input("Enter LAND price:")
+    post_price = st.number_input('Enter post-night price, if booked:')
+    dep_xfer_price = st.number_input("If booked, enter departure transfer price:")
+    
+with column2:
+    ins_date = st.date_input("Insurance Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=today)
+    st.markdown("#")
+    arr_xfer_date = st.date_input("Arr Xfer Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=ins_date)
+    prenight_date = st.date_input("Prenight Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=arr_xfer_date)
+    mct_date = st.date_input("Tour Dep Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=prenight_date)
+    post_date = st.date_input("Postnight Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=mct_date)
+    dep_xfer_date = st.date_input("Dep Xfer Date",format="YYYY-MM-DD", help="Date should be entered as YYYY-MM-DD", min_value=post_date)
 
 def calculate_segment_fees(price, days_until_segment):
     if days_until_segment >= 30 and today > final_pmt_date:

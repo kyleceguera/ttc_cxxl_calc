@@ -39,7 +39,7 @@ def calculate_total_fees(prices, days_until_segments):
 amount_paid = st.number_input("Amount Paid for this particular passenger:")
 cancellation_tier = st.selectbox('Trip Level', list(range(1,3)))
 deposit_amount = dep_amount(cancellation_tier)
-air_price = st.number_input("Air Department advised fees:", format="%.2f")
+air_price = st.number_input("Air Department advised fees, if cancelling air:", format="%.2f")
 ins_price = st.number_input("If insurance was purchased, input price of insurance:", format="%.2f")
 st.markdown(f"###### Deposit Amount: ${deposit_amount:.2f}")
 first_departure_date = st.date_input(

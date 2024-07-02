@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 
 today = datetime.today().date()
 
+# initialize UI
 st.set_page_config(page_title='TTC Cancellation Calculator', page_icon='dollar', layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.title("TTC CANCELLATION CALCULATOR")
-
 
 def calc_refund(amount_paid, claim_amount):
     return round(amount_paid - claim_amount,2)
@@ -66,11 +66,10 @@ if today < final_pmt_date:
     loss_deposits = round(air_price + deposit_amount,2)
     st.write(f"Total Cxxl Penalty (land+air deposit): ${loss_deposits:.2f}")
     cxxl_fees = round(ins_price + loss_deposits,2)
-    st.write(f"Total Witheld (deposits + insurance): ${cxxl_fees:.2f}")
+    st.write(f"Total Withheld (deposits + insurance): ${cxxl_fees:.2f}")
     refund = round(amount_paid - cxxl_fees,2)
-    st.write(f"Refund Due (amount paid - cancellation fees): ${refund:.2f}")
+    st.write(f"Refund Due (amount paid - total withheld): ${refund:.2f}")
     st.write(f"Amount to Claim with Insurance: ${loss_deposits:.2f}")
-
 
 if today >= final_pmt_date and first_departure_date != today:
     st.markdown("#### Input relevant booking information")

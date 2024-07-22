@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 
 today = datetime.today().date()
 
-# initialize UI
+#initialize streamlit UI
 st.set_page_config(page_title='TTC Cancellation Calculator', page_icon='dollar', layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.title("TTC CANCELLATION CALCULATOR")
+
 
 def calc_refund(amount_paid, claim_amount):
     return round(amount_paid - claim_amount,2)
@@ -35,11 +36,20 @@ def calculate_total_fees(prices, days_until_segments):
             segment_fee = calculate_segment_fees(price, days_until_segment)
             total_fees += segment_fee
         return total_fees
-            
+    
+def calc_cxxl_percentage(today, days_until_segments):
+    if today >= days_until_segments and days_until_segments >= 30:
+        return("CXXL Percentage = 50%")
+    elif 2 < days_to_arr_xfer_date < 30:
+        return("CXXL Percentage = 80%")
+    else:
+        return("CXXL Percenta")
+
+#user input derived from booking, intended to calculate fees on per person basis           
 amount_paid = st.number_input("Amount Paid for this particular passenger:")
-cancellation_tier = st.selectbox('Trip Level', list(range(1,3)))
+cancellation_tier = st.selectbox('Trip Level', list(range(1,3))) #defines what penalties will be assessed based on trip level
 deposit_amount = dep_amount(cancellation_tier)
-air_price = st.number_input("Air Department advised fees, if cancelling air:", format="%.2f")
+air_price = st.number_input("Air Department advised fees:", format="%.2f")
 ins_price = st.number_input("If insurance was purchased, input price of insurance:", format="%.2f")
 st.markdown(f"###### Deposit Amount: ${deposit_amount:.2f}")
 first_departure_date = st.date_input(
@@ -50,6 +60,7 @@ first_departure_date = st.date_input(
     )
 days_to_departure = (first_departure_date - today).days
 
+#adjusts final payment date based on cancellation tier
 if cancellation_tier == 1:
     final_pmt_date = first_departure_date - timedelta(60)
 else:
@@ -57,8 +68,8 @@ else:
     
 st.markdown(f"Days to departure: {days_to_departure}")
 st.write(f"Final Payment Due Date: :green[{final_pmt_date}]")
-# selected_tour = st.selectbox('Choose the tour:', tour_names)
 
+#if today is outide final payment date then we just assess deposits as fees
 if today < final_pmt_date:
     st.markdown("#### We are outside of final payment date, so cancellation fees are just loss of deposit")
     st.write(f"Land Deposit = ${deposit_amount:.2f}")
@@ -66,18 +77,19 @@ if today < final_pmt_date:
     loss_deposits = round(air_price + deposit_amount,2)
     st.write(f"Total Cxxl Penalty (land+air deposit): ${loss_deposits:.2f}")
     cxxl_fees = round(ins_price + loss_deposits,2)
-    st.write(f"Total Withheld (deposits + insurance): ${cxxl_fees:.2f}")
+    st.write(f"Total Witheld (deposites + insurance): ${cxxl_fees:.2f}")
     refund = round(amount_paid - cxxl_fees,2)
-    st.write(f"Refund Due (amount paid - total withheld): ${refund:.2f}")
+    st.write(f"Refund Due: ${refund:.2f}")
     st.write(f"Amount to Claim with Insurance: ${loss_deposits:.2f}")
 
+#if within final payment date, we need to calculate fees on a per segment basis
 if today >= final_pmt_date and first_departure_date != today:
     st.markdown("#### Input relevant booking information")
     column1, column2, column3= st.columns([0.4,0.2, 0.4])
     with column1:
         arr_xfer_price = st.number_input("If booked, enter arrival transfer price:", format="%.2f")
         prenight_price = st.number_input('Enter pre-night price, if booked:', format="%.2f")
-        mct_price = st.number_input("Enter LAND price (inclusive of intra air:", format="%.2f")
+        mct_price = st.number_input("Enter LAND price:", format="%.2f")
         post_price = st.number_input('Enter post-night price, if booked:', format="%.2f")
         dep_xfer_price = st.number_input("If booked, enter departure transfer price:", format="%.2f")
         
@@ -99,18 +111,23 @@ if today >= final_pmt_date and first_departure_date != today:
         # Calculate fees for each date
         arr_xfer_date_fees = calculate_segment_fees(arr_xfer_price, days_to_arr_xfer_date)
         prenight_date_fees = calculate_segment_fees(prenight_price, days_to_prenight_date)
-        mct_date_fees =  deposit_amount if today <= final_pmt_date else calculate_segment_fees(mct_price, days_to_mct_date)
+        mct_date_fees =  calculate_segment_fees(mct_price, days_to_mct_date)
         post_date_fees = calculate_segment_fees(post_price, days_to_post_date)
         dep_xfer_date_fees = calculate_segment_fees(dep_xfer_price, days_to_dep_xfer_date)
 
-        with column3: #Display the calculated fees
+        with column3: #Display the calculated fees to right of user input fields
             st.write(f"Insurance Price (not claimable): ${ins_price:.2f}")
             st.write(f"Fees Advised for Air: ${air_price:.2f}")
             st.write(f"Arr Xfer Fees: ${arr_xfer_date_fees:.2f} | :red[{days_to_arr_xfer_date} days away]")
+            st.write("Arr Xfer " + calc_cxxl_percentage(today, arr_xfer_date))
             st.write(f"Prenight Fees: ${prenight_date_fees:.2f} | :red[{days_to_prenight_date} days away]")
+            st.write("Prenight " + calc_cxxl_percentage(today, arr_xfer_date))
             st.write(f"Fees for LAND: ${mct_date_fees:.2f} | :red[{days_to_mct_date} days away]")
+            st.write("LAND " + calc_cxxl_percentage(today, arr_xfer_date))
             st.write(f"Postnight Fees: ${post_date_fees:.2f} | :red[{days_to_post_date} days away]")
+            st.write("Postnight " + calc_cxxl_percentage(today, arr_xfer_date))
             st.write(f"Dep Xfer Fees: ${dep_xfer_date_fees:.2f} | :red[{days_to_dep_xfer_date} days away]")
+            st.write("Dep Xfer " + calc_cxxl_percentage(today, arr_xfer_date))
 
             total_fees = ins_price + air_price + arr_xfer_date_fees + prenight_date_fees + mct_date_fees + post_date_fees + dep_xfer_date_fees
             claim_amount = total_fees - ins_price
@@ -120,4 +137,3 @@ if today >= final_pmt_date and first_departure_date != today:
         st.write(f"Claim Amount: ${claim_amount:.2f} :red[(total witheld MINUS cost of insurance)]")
         refund_amount = calc_refund(amount_paid, total_fees)
         st.write(f"REFUND DUE: ${refund_amount:.2f}")
-        

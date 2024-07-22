@@ -42,8 +42,10 @@ def calc_cxxl_percentage(today, final_pmt_date, days_until_segments):
         return("CXXL Percentage = 50%")
     elif 2 < days_until_segments < 30:
         return("CXXL Percentage = 80%")
+    elif days_until_segments <= 1:
+        return("CXXL Percentage = 100%")
     else:
-        return("CXXL Percenta")
+        return("Not Booked")
 
 #user input derived from booking, intended to calculate fees on per person basis           
 amount_paid = st.number_input("Amount Paid for this particular passenger:")

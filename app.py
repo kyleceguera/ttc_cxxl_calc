@@ -85,6 +85,10 @@ if today < final_pmt_date:
 #if within final payment date, we need to calculate fees on a per segment basis
 if today >= final_pmt_date and first_departure_date != today:
     st.markdown("#### Input relevant booking information")
+    st.markdown('###### These cancellation fees are based on input in previous section')
+    st.write(f"Insurance Price (not claimable): ${ins_price:.2f}")
+    st.write(f"Fees Advised for Air: ${air_price:.2f}")
+    st.markdown('###### Input Pricing and Dates to Calculate fees for each segment')
     column1, column2, column3= st.columns([0.4,0.2, 0.4])
     with column1:
         arr_xfer_price = st.number_input("If booked, enter arrival transfer price:", format="%.2f")
@@ -116,8 +120,6 @@ if today >= final_pmt_date and first_departure_date != today:
         dep_xfer_date_fees = calculate_segment_fees(dep_xfer_price, days_to_dep_xfer_date)
 
         with column3: #Display the calculated fees to right of user input fields
-            st.write(f"Insurance Price (not claimable): ${ins_price:.2f}")
-            st.write(f"Fees Advised for Air: ${air_price:.2f}")
             st.write(f"Arr Xfer Fees: ${arr_xfer_date_fees:.2f} | :red[{days_to_arr_xfer_date} days away]")
             st.write("Arr Xfer " + calc_cxxl_percentage(today, final_pmt_date, days_to_arr_xfer_date))
             st.write(f"Prenight Fees: ${prenight_date_fees:.2f} | :red[{days_to_prenight_date} days away]")

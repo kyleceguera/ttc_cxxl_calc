@@ -40,7 +40,7 @@ def calculate_total_fees(prices, days_until_segments):
 def calc_cxxl_percentage(today, days_until_segments):
     if today >= days_until_segments and days_until_segments >= 30:
         return("CXXL Percentage = 50%")
-    elif 2 < days_to_arr_xfer_date < 30:
+    elif 2 < days_until_segments < 30:
         return("CXXL Percentage = 80%")
     else:
         return("CXXL Percenta")

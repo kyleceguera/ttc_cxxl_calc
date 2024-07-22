@@ -37,8 +37,8 @@ def calculate_total_fees(prices, days_until_segments):
             total_fees += segment_fee
         return total_fees
     
-def calc_cxxl_percentage(today, days_until_segments):
-    if today >= days_until_segments and days_until_segments >= 30:
+def calc_cxxl_percentage(today, final_pmt_date, days_until_segments):
+    if today >= final_pmt_date and days_until_segments >= 30:
         return("CXXL Percentage = 50%")
     elif 2 < days_until_segments < 30:
         return("CXXL Percentage = 80%")
@@ -119,15 +119,15 @@ if today >= final_pmt_date and first_departure_date != today:
             st.write(f"Insurance Price (not claimable): ${ins_price:.2f}")
             st.write(f"Fees Advised for Air: ${air_price:.2f}")
             st.write(f"Arr Xfer Fees: ${arr_xfer_date_fees:.2f} | :red[{days_to_arr_xfer_date} days away]")
-            st.write("Arr Xfer " + calc_cxxl_percentage(today, arr_xfer_date))
+            st.write("Arr Xfer " + calc_cxxl_percentage(today, final_pmt_date, days_to_arr_xfer_date))
             st.write(f"Prenight Fees: ${prenight_date_fees:.2f} | :red[{days_to_prenight_date} days away]")
-            st.write("Prenight " + calc_cxxl_percentage(today, arr_xfer_date))
+            st.write("Prenight " + calc_cxxl_percentage(today, final_pmt_date, days_to_prenight_date))
             st.write(f"Fees for LAND: ${mct_date_fees:.2f} | :red[{days_to_mct_date} days away]")
-            st.write("LAND " + calc_cxxl_percentage(today, arr_xfer_date))
+            st.write("LAND " + calc_cxxl_percentage(today, final_pmt_date, days_to_mct_date))
             st.write(f"Postnight Fees: ${post_date_fees:.2f} | :red[{days_to_post_date} days away]")
-            st.write("Postnight " + calc_cxxl_percentage(today, arr_xfer_date))
+            st.write("Postnight " + calc_cxxl_percentage(today, final_pmt_date, days_to_post_date))
             st.write(f"Dep Xfer Fees: ${dep_xfer_date_fees:.2f} | :red[{days_to_dep_xfer_date} days away]")
-            st.write("Dep Xfer " + calc_cxxl_percentage(today, arr_xfer_date))
+            st.write("Dep Xfer " + calc_cxxl_percentage(today, final_pmt_date, days_to_dep_xfer_date))
 
             total_fees = ins_price + air_price + arr_xfer_date_fees + prenight_date_fees + mct_date_fees + post_date_fees + dep_xfer_date_fees
             claim_amount = total_fees - ins_price
